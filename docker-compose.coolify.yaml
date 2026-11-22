@@ -34,7 +34,9 @@ services:
       - TEMPORAL_ADDRESS=temporal:7233
       - IS_GENERAL=true
       - NX_ADD_PLUGINS=false
-      - NOT_SECURED=${NOT_SECURED:-false}
+      # Postiz checks only whether NOT_SECURED / POSTIZ_GENERIC_OAUTH are set,
+      # not their value: "false" counts as on. Leave them empty to turn them off.
+      - NOT_SECURED=${NOT_SECURED:-}
 
       # Registration. Sign-ups through the generic OAuth/OIDC provider below
       # are always allowed, even when this is true: limit who can open the
@@ -48,7 +50,7 @@ services:
       # https://auth.example.com/application/o/authorize/
       # https://auth.example.com/application/o/token/
       # https://auth.example.com/application/o/userinfo/
-      - POSTIZ_GENERIC_OAUTH=${POSTIZ_GENERIC_OAUTH:-false}
+      - POSTIZ_GENERIC_OAUTH=${POSTIZ_GENERIC_OAUTH:-}
       - NEXT_PUBLIC_POSTIZ_OAUTH_DISPLAY_NAME=${POSTIZ_OAUTH_DISPLAY_NAME:-Authentik}
       - NEXT_PUBLIC_POSTIZ_OAUTH_LOGO_URL=${POSTIZ_OAUTH_LOGO_URL:-https://raw.githubusercontent.com/walkxcode/dashboard-icons/master/png/authentik.png}
       - POSTIZ_OAUTH_URL=${POSTIZ_OAUTH_URL}
