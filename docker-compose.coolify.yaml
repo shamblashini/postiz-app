@@ -25,15 +25,12 @@ services:
       - FRONTEND_URL=${SERVICE_URL_POSTIZ}
       - NEXT_PUBLIC_BACKEND_URL=${SERVICE_URL_POSTIZ}/api
       - JWT_SECRET=${SERVICE_PASSWORD_JWTSECRET}
-      - DATABASE_URL=postgresql://postgres:${SERVICE_PASSWORD_POSTGRESQL}@postgres:5432/${POSTGRESQL_DATABASE:-postiz-db}
+      - DATABASE_URL=postgresql://postgres:${SERVICE_PASSWORD_POSTGRESQL}@postgres:5432/postiz-db
       - REDIS_URL=redis://default:${SERVICE_PASSWORD_REDIS}@redis:6379
       - BACKEND_INTERNAL_URL=http://localhost:3000
       - TEMPORAL_ADDRESS=temporal:7233
       - IS_GENERAL=true
       - NX_ADD_PLUGINS=false
-      # Postiz checks only whether NOT_SECURED / POSTIZ_GENERIC_OAUTH are set,
-      # not their value: "false" counts as on. Leave them empty to turn them off.
-      - NOT_SECURED=${NOT_SECURED:-}
 
       # Registration. Sign-ups through the generic OAuth/OIDC provider below
       # are always allowed, even when this is true: limit who can open the
@@ -48,6 +45,8 @@ services:
       # example https://auth.example.com/application/o/<application slug>/
       # The endpoints are read from its OpenID configuration. The three
       # *_AUTH/TOKEN/USERINFO_URL are only for providers without discovery.
+      # Postiz checks only whether POSTIZ_GENERIC_OAUTH is set, not its value:
+      # "false" counts as on, leave it empty to hide the button.
       - POSTIZ_GENERIC_OAUTH=${POSTIZ_GENERIC_OAUTH:-}
       - NEXT_PUBLIC_POSTIZ_OAUTH_DISPLAY_NAME=${POSTIZ_OAUTH_DISPLAY_NAME:-Authentik}
       - NEXT_PUBLIC_POSTIZ_OAUTH_LOGO_URL=${POSTIZ_OAUTH_LOGO_URL:-https://raw.githubusercontent.com/walkxcode/dashboard-icons/master/png/authentik.png}
@@ -60,8 +59,8 @@ services:
 
       # Storage: "local" keeps uploads in the postiz_uploads volume.
       - STORAGE_PROVIDER=${STORAGE_PROVIDER:-local}
-      - UPLOAD_DIRECTORY=${UPLOAD_DIRECTORY:-/uploads}
-      - NEXT_PUBLIC_UPLOAD_DIRECTORY=${NEXT_PUBLIC_UPLOAD_DIRECTORY:-/uploads}
+      - UPLOAD_DIRECTORY=/uploads
+      - NEXT_PUBLIC_UPLOAD_DIRECTORY=/uploads
       - CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
       - CLOUDFLARE_ACCESS_KEY=${CLOUDFLARE_ACCESS_KEY}
       - CLOUDFLARE_SECRET_ACCESS_KEY=${CLOUDFLARE_SECRET_ACCESS_KEY}
@@ -132,7 +131,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${SERVICE_PASSWORD_POSTGRESQL}
-      - POSTGRES_DB=${POSTGRESQL_DATABASE:-postiz-db}
+      - POSTGRES_DB=postiz-db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB:-postiz-db}"]
       interval: 5s

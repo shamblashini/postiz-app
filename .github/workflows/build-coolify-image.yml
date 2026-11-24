@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - coolify
+    paths-ignore:
+      - 'docker-compose.coolify.yaml'
 
 jobs:
   build-image:
